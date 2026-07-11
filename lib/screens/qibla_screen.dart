@@ -3,14 +3,16 @@
 /// ═══════════════════════════════════════════════════
 library;
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_compass/flutter_compass.dart';
 import 'package:provider/provider.dart';
 
+import '../services/geomag_service.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
+import '../utils/islamic_utils.dart';
 import '../widgets/common.dart';
 
 class QiblaScreen extends StatefulWidget {
@@ -21,17 +23,89 @@ class QiblaScreen extends StatefulWidget {
 }
 
 class _QiblaScreenState extends State<QiblaScreen> {
-  double _heading = 0;
+  StreamSubscription<CompassReading>? _sub;
+
   bool _hasCompass = true;
+  bool _gotReading = false;
+
+  /// Status kalibrasi sensor (0=unreliable … 3=tinggi), -1 = tak diketahui.
+  int _status = -1;
+
+  // Penghalusan sirkular (komponen vektor agar aman melewati 0°/360°)
+  double _sx = 0, _sy = 0;
+  bool _first = true;
+
+  /// Heading utara-sejati yang sudah dihaluskan (0–360).
+  double _smooth = 0;
+
+  /// Sudut kumulatif tanpa wrap — mencegah piringan berputar ~360°
+  /// ke arah salah saat melewati utara.
+  double _display = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = GeomagService.compass.listen(
+      _onCompass,
+      onError: (_) => setState(() => _hasCompass = false),
+    );
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  void _onCompass(CompassReading reading) {
+    // Koreksi deklinasi: heading magnetik → utara sejati (WMM).
+    final decl = context.read<AppState>().magneticDeclination;
+    final trueHeading = fixAngle(reading.azimuth + decl);
+
+    // Low-pass filter pada komponen sin/cos (aman terhadap wrap).
+    // Sensor fusi sudah stabil — alpha cukup ringan agar tetap responsif.
+    const alpha = 0.35;
+    final rad = trueHeading * math.pi / 180;
+    if (_first) {
+      _sx = math.cos(rad);
+      _sy = math.sin(rad);
+      _first = false;
+    } else {
+      _sx += alpha * (math.cos(rad) - _sx);
+      _sy += alpha * (math.sin(rad) - _sy);
+    }
+    final smoothed = fixAngle(_deg(math.atan2(_sy, _sx)));
+
+    // Delta terpendek → sudut kumulatif untuk animasi.
+    var delta = smoothed - _smooth;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    // Hindari setState berlebihan untuk perubahan < 0.2°.
+    if (_gotReading && delta.abs() < 0.2 && reading.status == _status) return;
+
+    setState(() {
+      _hasCompass = true;
+      _gotReading = true;
+      _status = reading.status;
+      _smooth = smoothed;
+      _display += delta;
+    });
+  }
+
+  static double _deg(double r) => r * 180 / math.pi;
+
+  /// Sensor butuh kalibrasi? (status magnetometer unreliable/rendah)
+  bool get _needsCalibration => _gotReading && _status >= 0 && _status <= 1;
 
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
     final numberFmt = app.lang == 'id' ? '.' : ',';
-    final distance = app.kaabaDistance
-        .round()
-        .toString()
-        .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => numberFmt);
+    final distance = app.kaabaDistance.round().toString().replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (_) => numberFmt,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -46,77 +120,106 @@ class _QiblaScreenState extends State<QiblaScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-          child: StreamBuilder<CompassEvent>(
-            stream: FlutterCompass.events,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) _hasCompass = false;
-              final heading = snapshot.data?.heading;
-              if (heading != null) _heading = heading;
+          child: Column(
+            children: [
+              // ── Kompas ──
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: _Compass(
+                  heading: _smooth,
+                  displayAngle: _display,
+                  qibla: app.qibla,
+                ),
+              ),
+              const SizedBox(height: 10),
 
-              return Column(
+              // ── Status sensor & deklinasi ──
+              _StatusPill(
+                needsCalibration: _needsCalibration,
+                declination: app.magneticDeclination,
+                live: _hasCompass && _gotReading,
+                app: app,
+              ),
+              const SizedBox(height: 14),
+
+              // ── Statistik ──
+              Row(
                 children: [
-                  // ── Kompas ──
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: _Compass(heading: _heading, qibla: app.qibla),
+                  _statCard(
+                    app.t('qiblaBearing'),
+                    '${app.qibla.toStringAsFixed(1)}°',
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(width: 12),
+                  _statCard(app.t('heading'), '${_smooth.round() % 360}°'),
+                  const SizedBox(width: 12),
+                  _statCard(app.t('distanceKaaba'), '$distance km'),
+                ],
+              ),
+              const SizedBox(height: 18),
 
-                  // ── Statistik ──
-                  Row(
+              // ── Peringatan kalibrasi ──
+              if (_needsCalibration) ...[
+                Card(
+                  color: Colors.amber.withValues(alpha: 0.14),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.vibration, color: Colors.amber),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '${app.t('calibrationNeeded')} — ${app.t('calibrationHint')}',
+                            style: const TextStyle(fontSize: 13, height: 1.55),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+              ],
+
+              // ── Instruksi ──
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _statCard(app.t('qiblaBearing'),
-                          '${app.qibla.toStringAsFixed(1)}°'),
+                      const Icon(Icons.info_outline, color: QhColors.gold),
                       const SizedBox(width: 12),
-                      _statCard(app.t('heading'), '${_heading.round()}°'),
-                      const SizedBox(width: 12),
-                      _statCard(app.t('distanceKaaba'), '$distance km'),
+                      Expanded(
+                        child: Text(
+                          _hasCompass && _gotReading
+                              ? app.t('qiblaInstruction')
+                              : '${app.t('qiblaInstruction')}\n\n(Sensor kompas tidak terdeteksi — arah ditampilkan dari utara.)',
+                          style: TextStyle(
+                            fontSize: 13,
+                            height: 1.55,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 18),
+                ),
+              ),
+              const SizedBox(height: 18),
 
-                  // ── Instruksi ──
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.info_outline, color: QhColors.gold),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              _hasCompass && snapshot.data?.heading != null
-                                  ? app.t('qiblaInstruction')
-                                  : '${app.t('qiblaInstruction')}\n\n(Sensor kompas tidak terdeteksi — arah ditampilkan dari utara.)',
-                              style: TextStyle(
-                                fontSize: 13,
-                                height: 1.55,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-
-                  // ── Tombol perbarui lokasi ──
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: () => _refreshLocation(app),
-                      icon: const Icon(Icons.my_location, size: 20),
-                      label: Text(app.t('refreshLocation')),
-                    ),
-                  ),
-                ],
-              );
-            },
+              // ── Tombol perbarui lokasi ──
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => _refreshLocation(app),
+                  icon: const Icon(Icons.my_location, size: 20),
+                  label: Text(app.t('refreshLocation')),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -126,7 +229,10 @@ class _QiblaScreenState extends State<QiblaScreen> {
   Future<void> _refreshLocation(AppState app) async {
     final ok = await app.requestLocation();
     if (mounted) {
-      showToast(context, ok ? app.t('locationUpdated') : app.t('locationDenied'));
+      showToast(
+        context,
+        ok ? app.t('locationUpdated') : app.t('locationDenied'),
+      );
     }
   }
 
@@ -167,12 +273,85 @@ class _QiblaScreenState extends State<QiblaScreen> {
   }
 }
 
+/// ─────────── Pil status sensor ───────────
+class _StatusPill extends StatelessWidget {
+  final bool needsCalibration;
+  final bool live;
+  final double declination;
+  final AppState app;
+
+  const _StatusPill({
+    required this.needsCalibration,
+    required this.live,
+    required this.declination,
+    required this.app,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = !live
+        ? Colors.grey
+        : needsCalibration
+        ? Colors.amber.shade700
+        : QhColors.primary;
+    final String text = !live
+        ? app.t('sensorOff')
+        : needsCalibration
+        ? app.t('calibrationNeeded')
+        : '${app.t('trueNorthActive')} · ${app.t('declination')} ${declination >= 0 ? '+' : ''}${declination.toStringAsFixed(1)}°';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            !live
+                ? Icons.explore_off_outlined
+                : needsCalibration
+                ? Icons.vibration
+                : Icons.explore_outlined,
+            size: 15,
+            color: color,
+          ),
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// ─────────── Widget kompas ───────────
 class _Compass extends StatelessWidget {
+  /// Heading ternormalisasi (0–360) — untuk ikon Ka'bah tetap tegak.
   final double heading;
+
+  /// Sudut kumulatif tanpa wrap — untuk rotasi piringan yang mulus.
+  final double displayAngle;
   final double qibla;
 
-  const _Compass({required this.heading, required this.qibla});
+  const _Compass({
+    required this.heading,
+    required this.displayAngle,
+    required this.qibla,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -208,25 +387,40 @@ class _Compass extends StatelessWidget {
                 color: surface,
                 // Piringan kompas — berputar berlawanan heading
                 child: AnimatedRotation(
-                  turns: -heading / 360,
-                  duration: const Duration(milliseconds: 250),
+                  turns: -displayAngle / 360,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       CustomPaint(
                         size: Size(size, size),
                         painter: _DialPainter(
-                          tickColor: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.35),
+                          tickColor: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.35),
                         ),
                       ),
                       // Huruf mata angin
                       _cardinal('N', Alignment.topCenter, QhColors.primary),
-                      _cardinal('S', Alignment.bottomCenter, null, context: context),
-                      _cardinal('E', Alignment.centerRight, null, context: context),
-                      _cardinal('W', Alignment.centerLeft, null, context: context),
+                      _cardinal(
+                        'S',
+                        Alignment.bottomCenter,
+                        null,
+                        context: context,
+                      ),
+                      _cardinal(
+                        'E',
+                        Alignment.centerRight,
+                        null,
+                        context: context,
+                      ),
+                      _cardinal(
+                        'W',
+                        Alignment.centerLeft,
+                        null,
+                        context: context,
+                      ),
                       // Jarum kiblat
                       Transform.rotate(
                         angle: qibla * math.pi / 180,
@@ -240,8 +434,10 @@ class _Compass extends StatelessWidget {
                                 // Ikon Ka'bah tetap tegak
                                 Transform.rotate(
                                   angle: -(qibla - heading) * math.pi / 180,
-                                  child: const Text('🕋',
-                                      style: TextStyle(fontSize: 26)),
+                                  child: const Text(
+                                    '🕋',
+                                    style: TextStyle(fontSize: 26),
+                                  ),
                                 ),
                                 const SizedBox(height: 4),
                                 Container(
@@ -300,8 +496,12 @@ class _Compass extends StatelessWidget {
     );
   }
 
-  Widget _cardinal(String letter, Alignment alignment, Color? color,
-      {BuildContext? context}) {
+  Widget _cardinal(
+    String letter,
+    Alignment alignment,
+    Color? color, {
+    BuildContext? context,
+  }) {
     return Align(
       alignment: alignment,
       child: Padding(
@@ -311,8 +511,11 @@ class _Compass extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            color: color ??
-                Theme.of(context!).colorScheme.onSurface.withValues(alpha: 0.55),
+            color:
+                color ??
+                Theme.of(
+                  context!,
+                ).colorScheme.onSurface.withValues(alpha: 0.55),
           ),
         ),
       ),

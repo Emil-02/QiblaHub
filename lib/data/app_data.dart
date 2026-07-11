@@ -155,6 +155,12 @@ const Map<String, Map<String, String>> i18n = {
     'distanceKaaba': "Jarak ke Ka'bah",
     'qiblaInstruction':
         "Letakkan ponsel pada permukaan datar, lalu putar perlahan hingga ikon Ka'bah sejajar dengan penunjuk atas.",
+    'calibrationNeeded': 'Kompas perlu kalibrasi',
+    'calibrationHint':
+        'Gerakkan ponsel membentuk angka 8 beberapa kali, dan jauhkan dari benda logam/magnet.',
+    'sensorOff': 'Sensor kompas tidak tersedia',
+    'trueNorthActive': 'Utara sejati aktif',
+    'declination': 'deklinasi',
     'refreshLocation': 'Perbarui Lokasi',
     'prayerMethodNote': 'Perhitungan: Muslim World League (Fajr 18°, Isha 17°)',
     'todayHijri': 'Hari ini (Hijriah)',
@@ -220,6 +226,12 @@ const Map<String, Map<String, String>> i18n = {
     'distanceKaaba': 'Distance to Kaaba',
     'qiblaInstruction':
         'Place your phone on a flat surface, then rotate slowly until the Kaaba icon aligns with the top marker.',
+    'calibrationNeeded': 'Compass needs calibration',
+    'calibrationHint':
+        'Move your phone in a figure-8 motion a few times, away from metal/magnetic objects.',
+    'sensorOff': 'Compass sensor unavailable',
+    'trueNorthActive': 'True north active',
+    'declination': 'declination',
     'refreshLocation': 'Refresh Location',
     'prayerMethodNote': 'Calculation: Muslim World League (Fajr 18°, Isha 17°)',
     'todayHijri': 'Today (Hijri)',

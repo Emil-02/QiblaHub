@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/app_data.dart';
+import '../services/geomag_service.dart';
 import '../services/notification_service.dart';
 import '../utils/islamic_utils.dart';
 
@@ -24,6 +25,10 @@ class AppState extends ChangeNotifier {
   String lang = 'id';
   ThemeMode themeMode = ThemeMode.light;
   bool adhanEnabled = true;
+
+  /// Deklinasi magnetik (derajat) di lokasi saat ini — dari WMM Android.
+  /// Dipakai untuk mengoreksi heading kompas ke utara sejati.
+  double magneticDeclination = 0;
 
   PrayerTimes? prayerTimes;
 
@@ -39,6 +44,7 @@ class AppState extends ChangeNotifier {
   AppState() {
     prayerTimes = computePrayerTimes(DateTime.now(), lat, lon);
     _loadPrefs();
+    _refreshDeclination();
   }
 
   /// Terjemahan
@@ -389,6 +395,15 @@ class AppState extends ChangeNotifier {
 
   void _recalculate() {
     prayerTimes = computePrayerTimes(DateTime.now(), lat, lon);
+    _refreshDeclination();
+  }
+
+  Future<void> _refreshDeclination() async {
+    final d = await GeomagService.declination(lat, lon);
+    if (d != magneticDeclination) {
+      magneticDeclination = d;
+      notifyListeners();
+    }
   }
 
   /// Salat saat ini & berikutnya
