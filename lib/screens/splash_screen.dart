@@ -3,6 +3,8 @@
 /// ═══════════════════════════════════════════════════
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +23,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  Timer? _navigationTimer;
 
   @override
   void initState() {
@@ -31,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
     )..forward();
 
     // Minta lokasi di latar belakang, lalu masuk ke aplikasi
-    Future.delayed(const Duration(milliseconds: 2400), () async {
+    _navigationTimer = Timer(const Duration(milliseconds: 2400), () {
       if (!mounted) return;
       context.read<AppState>().requestLocation();
       Navigator.of(context).pushReplacement(
@@ -48,6 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    _navigationTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

@@ -12,6 +12,8 @@ import '../state/app_state.dart';
 import '../theme.dart';
 import '../utils/islamic_utils.dart';
 import '../widgets/common.dart';
+import '../widgets/development_team_card.dart';
+import '../widgets/development_team_sheet.dart';
 import 'prayer_screen.dart';
 import 'qibla_screen.dart';
 
@@ -278,6 +280,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               isCurrent: status.current == p.key),
                       ],
                     ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                DevelopmentTeamCard(
+                  translate: app.t,
+                  onTap: () => showDevelopmentTeamSheet(
+                    context,
+                    translate: app.t,
                   ),
                 ),
               ],
