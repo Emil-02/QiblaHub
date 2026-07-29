@@ -26,7 +26,7 @@ abstract final class TeamData {
   ];
 
   static final downloadUri = Uri.parse(
-    'https://github.com/Emil-02/QiblaHub/releases/latest',
+    'https://github.com/Emil-02/QiblaHub/releases/download/v1.0.0/QiblaHub-v1.0.0.apk',
   );
 
   static final sourceCodeUri = Uri.parse('https://github.com/Emil-02/QiblaHub');

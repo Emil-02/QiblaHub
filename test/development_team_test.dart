@@ -42,7 +42,7 @@ void main() {
     );
     expect(
       TeamData.downloadUri.toString(),
-      'https://github.com/Emil-02/QiblaHub/releases/latest',
+      'https://github.com/Emil-02/QiblaHub/releases/download/v1.0.0/QiblaHub-v1.0.0.apk',
     );
   });
 
@@ -138,11 +138,11 @@ void main() {
     await tester.tap(find.text('Buka tim'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Download QiblaHub APK'),
+      find.text('Download Aplikasi'),
       250,
       scrollable: find.byType(Scrollable).last,
     );
-    await tester.tap(find.text('Download QiblaHub APK'));
+    await tester.tap(find.text('Download Aplikasi'));
     await tester.pump();
 
     expect(requestedUri, TeamData.downloadUri);
