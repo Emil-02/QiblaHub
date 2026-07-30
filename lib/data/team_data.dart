@@ -9,11 +9,6 @@ abstract final class TeamData {
   static const studentsLabelKey = 'teamStudents';
   static const studentCountKey = 'teamStudentCount';
   static const viewTeamKey = 'viewTeam';
-  static const downloadLabelKey = 'downloadQiblaHubApk';
-  static const downloadErrorKey = 'downloadOpenError';
-  static const sourceLabelKey = 'sourceCode';
-  static const sourceErrorKey = 'sourceCodeOpenError';
-
   static const lecturer = 'Dr. ALAMSYAH, S.Pd. I., M.H';
 
   static const members = <TeamMember>[
@@ -22,14 +17,6 @@ abstract final class TeamData {
     TeamMember(name: 'Emil Rahmat', studentId: '105841119124'),
     TeamMember(name: 'Tyara Ayuliansyah', studentId: '105841119524'),
     TeamMember(name: 'Gefira Nur Fatima', studentId: '105841120124'),
-    TeamMember(name: 'Muh Rafly Aprial Ridho', studentId: '105841112524'),
+    TeamMember(name: 'Muh Rafly Aprial Ridho', studentId: '105841120324'),
   ];
-
-  static final downloadUri = Uri.parse(
-    'https://github.com/Emil-02/QiblaHub/releases/download/v1.0.0/QiblaHub-v1.0.0.apk',
-  );
-
-  static final sourceCodeUri = Uri.parse('https://github.com/Emil-02/QiblaHub');
-
-  // APK release diunggah secara manual melalui halaman GitHub Releases.
 }

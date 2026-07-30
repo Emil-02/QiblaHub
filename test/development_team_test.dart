@@ -37,12 +37,8 @@ void main() {
         'Emil Rahmat|105841119124',
         'Tyara Ayuliansyah|105841119524',
         'Gefira Nur Fatima|105841120124',
-        'Muh Rafly Aprial Ridho|105841112524',
+        'Muh Rafly Aprial Ridho|105841120324',
       ],
-    );
-    expect(
-      TeamData.downloadUri.toString(),
-      'https://github.com/Emil-02/QiblaHub/releases/download/v1.0.0/QiblaHub-v1.0.0.apk',
     );
   });
 
@@ -113,39 +109,4 @@ void main() {
     expect(find.text('QiblaHub Development Team'), findsNothing);
   });
 
-  testWidgets('failed APK launch displays a localized message', (tester) async {
-    Uri? requestedUri;
-    await tester.pumpWidget(
-      _testApp(
-        Builder(
-          builder: (context) => Center(
-            child: FilledButton(
-              onPressed: () => showDevelopmentTeamSheet(
-                context,
-                translate: (key) => _translate('id', key),
-                externalUrlLauncher: (uri) async {
-                  requestedUri = uri;
-                  return false;
-                },
-              ),
-              child: const Text('Buka tim'),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    await tester.tap(find.text('Buka tim'));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('Download Aplikasi'),
-      250,
-      scrollable: find.byType(Scrollable).last,
-    );
-    await tester.tap(find.text('Download Aplikasi'));
-    await tester.pump();
-
-    expect(requestedUri, TeamData.downloadUri);
-    expect(find.text('Tidak dapat membuka halaman download'), findsOneWidget);
-  });
 }

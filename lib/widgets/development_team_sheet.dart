@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../data/team_data.dart';
 import '../theme.dart';
 import 'common.dart';
 
-typedef ExternalUrlLauncher = Future<bool> Function(Uri uri);
-
 Future<void> showDevelopmentTeamSheet(
   BuildContext context, {
   required String Function(String key) translate,
-  ExternalUrlLauncher? externalUrlLauncher,
 }) {
   final colorScheme = Theme.of(context).colorScheme;
 
@@ -26,45 +22,17 @@ Future<void> showDevelopmentTeamSheet(
     clipBehavior: Clip.antiAlias,
     builder: (sheetContext) => DevelopmentTeamSheet(
       translate: translate,
-      externalUrlLauncher: externalUrlLauncher,
     ),
   );
 }
 
 class DevelopmentTeamSheet extends StatelessWidget {
   final String Function(String key) translate;
-  final ExternalUrlLauncher? externalUrlLauncher;
 
   const DevelopmentTeamSheet({
     super.key,
     required this.translate,
-    this.externalUrlLauncher,
   });
-
-  Future<bool> _openExternally(Uri uri) {
-    final launcher = externalUrlLauncher;
-    if (launcher != null) return launcher(uri);
-    return launchUrl(uri, mode: LaunchMode.externalApplication);
-  }
-
-  Future<void> _openUrl(
-    BuildContext context,
-    Uri uri,
-    String errorMessage,
-  ) async {
-    var opened = false;
-    try {
-      opened = await _openExternally(uri);
-    } catch (_) {
-      opened = false;
-    }
-
-    if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(errorMessage)));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,31 +143,6 @@ class DevelopmentTeamSheet extends StatelessWidget {
                     const Divider(height: 1, indent: 72),
                 ],
               ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: () => _openUrl(
-                context,
-                TeamData.downloadUri,
-                translate(TeamData.downloadErrorKey),
-              ),
-              icon: const Icon(Icons.download_rounded),
-              label: Text(translate(TeamData.downloadLabelKey)),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: TextButton.icon(
-              onPressed: () => _openUrl(
-                context,
-                TeamData.sourceCodeUri,
-                translate(TeamData.sourceErrorKey),
-              ),
-              icon: const Icon(Icons.code_rounded),
-              label: Text(translate(TeamData.sourceLabelKey)),
             ),
           ),
         ],
