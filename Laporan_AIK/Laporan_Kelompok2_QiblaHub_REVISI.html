@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Laporan PKM AIK - QiblaHub (Kelompok 2)</title>
+    <style>
+      body {
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        text-align: justify;
+        margin: 4cm 3cm 3cm 4cm;
+      }
+      h1 {
+        font-size: 14pt;
+        text-align: center;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 13pt;
+        margin-top: 24px;
+      }
+      h3 {
+        font-size: 12pt;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0;
+      }
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        vertical-align: top;
+      }
+      th {
+        background: #e8e8e8;
+        text-align: center;
+      }
+      .cover {
+        text-align: center;
+      }
+      .cover p {
+        text-align: center;
+      }
+      .caption {
+        text-align: center;
+        font-size: 11pt;
+        margin-top: 4px;
+      }
+      .figure {
+        text-align: center;
+        margin: 16px 0;
+        page-break-inside: avoid;
+      }
+      .center {
+        text-align: center;
+      }
+      .pagebreak {
+        page-break-before: always;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════ HALAMAN SAMPUL ═══════════════ -->
+    <div class="cover">
+      <h1>
+        Laporan<br />Pengabdian kepada Masyarakat (PKM)<br />Al-Islam dan
+        Kemuhammadiyahan
+      </h1>
+      <p>
+        <b
+          >PENGEMBANGAN APLIKASI FALAK DIGITAL &ldquo;QIBLAHUB&rdquo; BERBASIS
+          ANDROID SEBAGAI SOLUSI PENENTUAN ARAH KIBLAT, JADWAL SALAT, KALENDER
+          HIJRIAH, DAN INFORMASI MASJID BAGI MASYARAKAT</b
+        >
+      </p>
+      <p><br /></p>
+      <p><img src="gambar/logo_unismuh.png" width="170" /></p>
+      <p><br /></p>
+      <p>DISUSUN OLEH:<br /><b>KELOMPOK 2</b></p>
+      <p>
+        DWI AZZAHRA SASQILA FITRI&nbsp;&nbsp;(105841118724)<br />
+        WURI SATYA NATAMA&nbsp;&nbsp;(105841118824)<br />
+        EMIL RAHMAT&nbsp;&nbsp;(1058411&hellip;24)<br />
+        TYARA AYULIANSYAH&nbsp;&nbsp;(105841119524)<br />
+        GEFIRA NUR FATIMA&nbsp;&nbsp;(105841120124)<br />
+        MUH RAFLY APRIAL RIDHO&nbsp;&nbsp;(1058411&hellip;24)
+      </p>
+      <p><br /></p>
+      <p>
+        <b
+          >PROGRAM STUDI INFORMATIKA<br />
+          FAKULTAS TEKNIK<br />
+          UNIVERSITAS MUHAMMADIYAH MAKASSAR<br />
+          2026</b
+        >
+      </p>
+    </div>
+
+    <div class="pagebreak"></div>
+
+    <!-- ═══════════════ KATA PENGANTAR ═══════════════ -->
+    <h2 style="text-align: center">KATA PENGANTAR</h2>
+    <p>
+      Puji dan syukur kami panjatkan ke hadirat Allah SWT atas segala rahmat,
+      hidayah, dan karunia-Nya sehingga kami dapat menyelesaikan laporan
+      Pengabdian kepada Masyarakat (PKM) Al-Islam dan Kemuhammadiyahan yang
+      berjudul &ldquo;Pengembangan Aplikasi Falak Digital <i>QiblaHub</i>
+      Berbasis Android sebagai Solusi Penentuan Arah Kiblat, Jadwal Salat,
+      Kalender Hijriah, dan Informasi Masjid bagi Masyarakat&rdquo; ini dengan
+      baik dan tepat waktu. Selawat serta salam senantiasa tercurah kepada Nabi
+      Muhammad SAW, yang telah membawa umat manusia dari zaman kegelapan menuju
+      zaman yang terang benderang.
+    </p>
+    <p>
+      Laporan ini disusun sebagai bentuk pertanggungjawaban akademik atas
+      kegiatan yang telah kami rancang dan laksanakan, sekaligus sebagai media
+      evaluasi terhadap proses identifikasi masalah, perancangan solusi,
+      pembuatan produk, hingga hasil akhir yang dicapai. Kegiatan ini merupakan
+      wujud nyata pengamalan Ilmu Falak yang diintegrasikan dengan nilai-nilai
+      Al-Islam dan Kemuhammadiyahan (AIK), guna menghadirkan solusi teknologi
+      yang aplikatif dan bermanfaat bagi masyarakat luas, khususnya dalam hal
+      ketepatan arah kiblat dan pelaksanaan ibadah salat.
+    </p>
+    <p>
+      Kami menyadari bahwa dalam proses penyusunan laporan ini, kami banyak
+      mendapatkan bimbingan, arahan, serta dukungan dari berbagai pihak. Oleh
+      karena itu, kami mengucapkan terima kasih kepada Bapak/Ibu Dosen pengampu
+      mata kuliah yang telah memberikan bimbingan selama proses perancangan
+      hingga penyusunan laporan, serta kepada seluruh pihak yang telah membantu,
+      baik secara langsung maupun tidak langsung, dalam pelaksanaan kegiatan
+      ini.
+    </p>
+    <p style="text-align: right">
+      Makassar, 16 Juli 2026<br />
+      <b>Kelompok 2</b>
+    </p>
+
+    <div class="pagebreak"></div>
+
+    <!-- ═══════════════ BAB I ═══════════════ -->
+    <h2 style="text-align: center">BAB I<br />PENDAHULUAN</h2>
+
+    <h3>1.1 Latar Belakang</h3>
+    <p>
+      Ketepatan pelaksanaan ibadah salat sangat bergantung pada dua hal utama,
+      yaitu ketepatan arah kiblat dan ketepatan waktu salat. Di lapangan, masih
+      banyak ditemukan masjid maupun musala yang arah kiblatnya belum diukur
+      secara presisi menggunakan metode dan alat yang sesuai dengan kaidah Ilmu
+      Falak, sehingga berpotensi menimbulkan kekeliruan arah sujud jamaah.
+    </p>
+    <p>
+      Selain itu, banyak masyarakat yang masih mengandalkan informasi jadwal
+      salat secara manual atau dari sumber yang tidak selalu akurat untuk lokasi
+      mereka, serta belum tersedianya aplikasi terpadu yang menampilkan arah
+      kiblat, jadwal salat, informasi lokasi masjid/musala terdekat, dan
+      kalender Hijriah dalam satu platform yang mudah diakses.
+    </p>
+    <p>
+      Di sisi lain, ponsel pintar masa kini telah dilengkapi sensor GPS,
+      magnetometer, akselerometer, dan giroskop yang dapat dimanfaatkan untuk
+      menjawab persoalan tersebut. Kondisi ini menjadi latar belakang bagi
+      kelompok untuk mengembangkan sebuah aplikasi berbasis Android bernama
+      <b>QiblaHub</b> yang mengintegrasikan kebutuhan tersebut, sebagai bentuk
+      kontribusi Ilmu Falak dan teknologi informasi dalam menjawab persoalan
+      nyata di masyarakat, sejalan dengan semangat Muhammadiyah yang memandang
+      ilmu pengetahuan sebagai ikhtiar memajukan kehidupan umat.
+    </p>
+
+    <h3>1.2 Tujuan Kegiatan</h3>
+    <p>Kegiatan Pengabdian kepada Masyarakat (PKM) AIK ini bertujuan untuk:</p>
+    <ol>
+      <li>
+        Mengembangkan aplikasi digital yang membantu masyarakat menentukan arah
+        kiblat secara akurat menggunakan prinsip Ilmu Falak dan sensor ponsel.
+      </li>
+      <li>
+        Menyediakan informasi jadwal waktu salat secara otomatis berdasarkan
+        lokasi pengguna, dilengkapi notifikasi (alarm) azan.
+      </li>
+      <li>
+        Menyediakan informasi lokasi masjid dan musala terdekat beserta detail
+        dan rute menuju lokasinya.
+      </li>
+      <li>
+        Menyediakan kalender Hijriah sebagai panduan awal bulan dan hari-hari
+        penting keagamaan sekaligus media edukasi Ilmu Falak.
+      </li>
+      <li>
+        Mengaplikasikan nilai Al-Islam dan Kemuhammadiyahan (AIK) melalui produk
+        teknologi yang bermanfaat bagi umat (dakwah bil hal).
+      </li>
+      <li>
+        Melatih kemampuan mahasiswa dalam merancang dan membangun solusi
+        berbasis teknologi terhadap permasalahan keagamaan di masyarakat.
+      </li>
+    </ol>
+
+    <h3>1.3 Sasaran Kegiatan</h3>
+    <ol>
+      <li>Masjid dan musala Muhammadiyah di sekitar lokasi pengabdian.</li>
+      <li>Sekolah dan pesantren Muhammadiyah.</li>
+      <li>Kantor dan Amal Usaha Muhammadiyah.</li>
+      <li>
+        Masyarakat umum pengguna ponsel Android di sekitar kampus dan lokasi
+        pengabdian.
+      </li>
+    </ol>
+
+    <div class="pagebreak"></div>
+
+    <!-- ═══════════════ BAB II ═══════════════ -->
+    <h2 style="text-align: center">BAB II<br />PEMBAHASAN</h2>
+
+    <h3>2.1 Dasar AIK dan Ilmu Falak</h3>
+    <p>
+      Kegiatan ini memiliki keterkaitan yang erat dengan nilai Al-Islam dan
+      Kemuhammadiyahan (AIK) serta kajian Ilmu Falak. Arah kiblat merupakan
+      syarat sah pelaksanaan salat sehingga penentuannya harus dilakukan secara
+      akurat berdasarkan perhitungan astronomis, yaitu posisi Ka&rsquo;bah di
+      Kota Makkah (21,422487&deg; LU; 39,826206&deg; BT) terhadap posisi
+      geografis pengguna.
+    </p>
+    <p>
+      Waktu salat berkaitan langsung dengan peredaran (posisi) Matahari terhadap
+      horizon, yang meliputi waktu Subuh, Zuhur, Asar, Magrib, dan Isya. Adapun
+      kalender Hijriah dan penentuan awal bulan berkaitan dengan peredaran Bulan
+      (hisab), yang menjadi salah satu kajian utama dalam Ilmu Falak. Kalender
+      Hijriah dalam aplikasi bersifat edukatif; penetapan resmi awal bulan
+      ibadah tetap merujuk pada maklumat Pimpinan Pusat Muhammadiyah.
+    </p>
+    <p>
+      Dengan demikian, aplikasi yang dikembangkan bukan sekadar produk
+      teknologi, melainkan wujud nyata pengamalan nilai-nilai Islam dan
+      Kemuhammadiyahan melalui pemanfaatan ilmu pengetahuan dan teknologi untuk
+      memudahkan ibadah umat.
+    </p>
+
+    <h3>2.2 Metode Pelaksanaan</h3>
+    <p>Kegiatan ini dilaksanakan melalui beberapa tahapan sebagai berikut:</p>
+    <ol>
+      <li>
+        <b>Observasi.</b> Mengidentifikasi permasalahan di masyarakat terkait
+        ketepatan arah kiblat, akses jadwal salat, dan informasi masjid/musala.
+      </li>
+      <li>
+        <b>Pengumpulan data.</b> Mengumpulkan data koordinat Ka&rsquo;bah,
+        parameter perhitungan waktu salat, data deklinasi magnetik (<i
+          >World Magnetic Model</i
+        >), serta data sebaran masjid dari basis data OpenStreetMap.
+      </li>
+      <li>
+        <b>Perancangan (desain).</b> Menyusun alur aplikasi (<i>user flow</i>)
+        dan merancang antarmuka (UI/UX) meliputi tampilan <i>splash screen</i>,
+        beranda, jadwal salat, arah kiblat, daftar dan detail masjid, kalender,
+        serta pengaturan.
+      </li>
+      <li>
+        <b>Pembuatan produk.</b> Mengimplementasikan rancangan menjadi aplikasi
+        Android fungsional bernama <b>QiblaHub</b> menggunakan
+        <i>framework</i> Flutter (bahasa Dart), lengkap dengan kompas kiblat,
+        jadwal salat, notifikasi azan, kalender Hijriah, dan peta masjid
+        terdekat.
+      </li>
+      <li>
+        <b>Uji coba.</b> Menguji akurasi arah kiblat pada perangkat Android
+        sesungguhnya dengan membandingkan hasil aplikasi terhadap nilai rujukan
+        perhitungan Ilmu Falak, serta menguji alur navigasi dan kemudahan
+        penggunaan (<i>usability</i>).
+      </li>
+      <li>
+        <b>Sosialisasi.</b> Memperkenalkan aplikasi kepada dosen dan rekan
+        mahasiswa sebagai bagian dari evaluasi produk, disertai edukasi singkat
+        Ilmu Falak (arah kiblat, waktu salat, kalender Hijriah).
+      </li>
+      <li>
+        <b>Evaluasi.</b> Menghimpun masukan untuk penyempurnaan aplikasi pada
+        tahap pengembangan selanjutnya.
+      </li>
+    </ol>
+
+    <h3>2.3 Hasil Kegiatan</h3>
+    <p>
+      Hasil utama dari kegiatan ini adalah aplikasi Android fungsional bernama
+      <b>QiblaHub</b> yang menggabungkan empat layanan Ilmu Falak praktis dalam
+      satu aplikasi: penentu arah kiblat, jadwal waktu salat, kalender Hijriah,
+      dan pencari masjid terdekat. Aplikasi mendukung dua bahasa (Indonesia dan
+      Inggris), tema terang/gelap, serta notifikasi azan otomatis. Kode sumber
+      aplikasi dipublikasikan secara terbuka di GitHub:
+      <a href="https://github.com/Emil-02/QiblaHub"
+        >https://github.com/Emil-02/QiblaHub</a
+      >.
+    </p>
+    <table>
+      <tr>
+        <th style="width: 25%">Fitur</th>
+        <th>Penjelasan Teknis</th>
+      </tr>
+      <tr>
+        <td>Arah kiblat akurat</td>
+        <td>
+          Kompas memanfaatkan sensor fusi Android (<i>rotation vector</i>:
+          gabungan giroskop, akselerometer, magnetometer). Arah utara magnetik
+          dikoreksi deklinasi magnetik dari <i>World Magnetic Model</i> (WMM)
+          sehingga mengacu pada utara sejati. Sudut kiblat dihitung dengan rumus
+          lingkaran besar (<i>great-circle bearing</i>) terhadap koordinat
+          Ka&rsquo;bah. Aplikasi juga mendeteksi status kalibrasi magnetometer
+          dan menampilkan panduan kalibrasi (gerakan angka 8) bila sensor tidak
+          akurat.
+        </td>
+      </tr>
+      <tr>
+        <td>Jadwal waktu salat</td>
+        <td>
+          Perhitungan astronomis posisi Matahari dengan parameter Muslim World
+          League (Subuh 18&deg;, Isya 17&deg;) berbasis koordinat GPS pengguna,
+          dilengkapi hitung mundur salat berikutnya dan notifikasi azan.
+        </td>
+      </tr>
+      <tr>
+        <td>Kalender Hijriah</td>
+        <td>
+          Konversi kalender Masehi&ndash;Hijriah beserta penanda hari besar
+          Islam (awal Ramadan, Syawal, Zulhijah, dan lainnya) sebagai media
+          edukasi.
+        </td>
+      </tr>
+      <tr>
+        <td>Masjid terdekat</td>
+        <td>
+          Data masjid diambil dari OpenStreetMap (Overpass API) di sekitar
+          lokasi pengguna, ditampilkan pada peta digital beserta jarak tempuh
+          jalan (OSRM) dan tautan navigasi.
+        </td>
+      </tr>
+      <tr>
+        <td>Jarak ke Ka&rsquo;bah</td>
+        <td>Dihitung dengan formula haversine dari koordinat pengguna.</td>
+      </tr>
+      <tr>
+        <td>Antarmuka</td>
+        <td>
+          Dua bahasa (ID/EN), mode gelap/terang, desain Material 3 yang ramah
+          pengguna.
+        </td>
+      </tr>
+    </table>
+
+    <p>
+      <b>Uji akurasi arah kiblat.</b> Pengujian dilakukan pada perangkat Android
+      sesungguhnya di Kota Makassar. Nilai rujukan arah kiblat Makassar
+      berdasarkan perhitungan Ilmu Falak adalah sekitar 292,5&deg; dari utara
+      sejati. Hasil pembacaan aplikasi menunjukkan arah 292&deg; ketika ikon
+      Ka&rsquo;bah tepat sejajar dengan penanda atas kompas, dengan koreksi
+      deklinasi magnetik yang diterapkan secara otomatis. Selisih pembacaan
+      kurang dari 1&deg; menunjukkan akurasi aplikasi sangat baik untuk
+      kebutuhan praktis penentuan arah kiblat. Jarak ke Ka&rsquo;bah yang
+      ditampilkan (&plusmn;9.149 km dari Makassar) juga sesuai dengan nilai
+      rujukan.
+    </p>
+
+    <p>
+      Berikut tampilan seluruh halaman aplikasi QiblaHub (tema gelap /
+      <i>dark mode</i>):
+    </p>
+    <div class="figure">
+      <img src="gambar/01_splash.png" width="300" />
+      <p class="caption">
+        Gambar 1. Layar pembuka (splash screen) yang menampilkan identitas
+        aplikasi
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/02_beranda.png" width="250" />
+      <p class="caption">
+        Gambar 2. Beranda: salam, tanggal Masehi/Hijriah, salat berikutnya, menu
+        fitur, dan ringkasan jadwal hari ini
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/03_jadwal_salat.png" width="280" />
+      <p class="caption">
+        Gambar 3. Jadwal waktu salat harian sesuai lokasi pengguna beserta
+        hitung mundur
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/04_arah_kiblat.png" width="280" />
+      <p class="caption">
+        Gambar 4. Kompas arah kiblat dengan koreksi utara sejati (deklinasi
+        magnetik) dan indikator kalibrasi sensor
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/05_daftar_masjid.png" width="240" />
+      <p class="caption">
+        Gambar 5. Peta dan daftar masjid terdekat dari lokasi pengguna
+        (OpenStreetMap)
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/06_detail_masjid.png" width="300" />
+      <p class="caption">
+        Gambar 6. Detail masjid beserta jarak dan tautan navigasi
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/07_kalender.png" width="200" />
+      <p class="caption">
+        Gambar 7. Kalender Hijriah lengkap dengan penanda hari besar Islam
+      </p>
+    </div>
+    <div class="figure">
+      <img src="gambar/08_pengaturan.png" width="280" />
+      <p class="caption">
+        Gambar 8. Pengaturan: mode gelap, alarm azan, dan bahasa
+      </p>
+    </div>
+
+    <h3>2.4 Manfaat bagi Masyarakat</h3>
+    <p>
+      Aplikasi QiblaHub diharapkan memberikan manfaat berikut bagi masyarakat
+      dan Amal Usaha Muhammadiyah:
+    </p>
+    <ol>
+      <li>
+        Membantu masyarakat dan pengurus masjid/musala menentukan arah kiblat
+        secara lebih akurat dan mudah.
+      </li>
+      <li>
+        Memudahkan akses informasi jadwal salat kapan saja dan di mana saja,
+        dilengkapi pengingat azan otomatis.
+      </li>
+      <li>
+        Membantu masyarakat menemukan lokasi masjid atau musala terdekat,
+        khususnya bagi pendatang atau musafir.
+      </li>
+      <li>
+        Meningkatkan pemahaman masyarakat mengenai Ilmu Falak melalui fitur
+        kalender Hijriah dan informasi hari besar Islam.
+      </li>
+      <li>
+        Memperkuat pelayanan keagamaan Amal Usaha Muhammadiyah melalui
+        pemanfaatan teknologi digital; aplikasi dibagikan gratis dan kode
+        sumbernya terbuka.
+      </li>
+    </ol>
+
+    <h3>2.5 Kendala dan Solusi</h3>
+    <table>
+      <tr>
+        <th style="width: 45%">Kendala</th>
+        <th>Solusi</th>
+      </tr>
+      <tr>
+        <td>
+          Sensor magnetometer ponsel mudah terganggu benda logam/magnet di
+          sekitarnya sehingga pembacaan kompas dapat melenceng.
+        </td>
+        <td>
+          Menggunakan sensor fusi <i>rotation vector</i> (gabungan giroskop,
+          akselerometer, magnetometer); aplikasi mendeteksi status kalibrasi dan
+          menampilkan panduan kalibrasi gerakan angka 8 bila sensor tidak
+          akurat.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Kompas ponsel mengacu pada utara magnetik yang berbeda dari utara
+          sejati, sehingga arah kiblat dapat bergeser.
+        </td>
+        <td>
+          Menerapkan koreksi deklinasi magnetik otomatis berdasarkan
+          <i>World Magnetic Model</i> (WMM) sesuai koordinat pengguna.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Data lokasi masjid dan musala pada peta digital belum sepenuhnya
+          lengkap dan akurat untuk sebagian wilayah.
+        </td>
+        <td>
+          Menggunakan basis data terbuka OpenStreetMap yang dapat diperbarui
+          bersama, serta melakukan verifikasi lokasi bekerja sama dengan
+          pengurus masjid/musala setempat.
+        </td>
+      </tr>
+      <tr>
+        <td>Kurangnya pemahaman sebagian masyarakat tentang Ilmu Falak.</td>
+        <td>
+          Menyediakan informasi dan panduan dalam aplikasi terkait arah kiblat,
+          waktu salat, dan kalender Hijriah, disertai edukasi singkat saat
+          sosialisasi.
+        </td>
+      </tr>
+      <tr>
+        <td>Keterbatasan waktu pengerjaan aplikasi.</td>
+        <td>
+          Menyusun pembagian tugas kelompok secara terjadwal dan fokus pada
+          penyelesaian fitur prioritas terlebih dahulu.
+        </td>
+      </tr>
+    </table>
+
+    <h3>2.6 Luaran Kegiatan</h3>
+    <ol>
+      <li>
+        Aplikasi Android <b>QiblaHub</b> (berkas APK siap pasang) dengan fitur
+        arah kiblat, jadwal waktu salat, kalender Hijriah, dan masjid terdekat.
+      </li>
+      <li>
+        Kode sumber terbuka di repositori GitHub (<a
+          href="https://github.com/Emil-02/QiblaHub"
+          >github.com/Emil-02/QiblaHub</a
+        >) sehingga dapat dikembangkan berkelanjutan.
+      </li>
+      <li>Dokumentasi tampilan aplikasi (tangkapan layar seluruh fitur).</li>
+      <li>Laporan kegiatan PKM AIK (dokumen ini).</li>
+    </ol>
+
+    <div class="pagebreak"></div>
+
+    <!-- ═══════════════ BAB III ═══════════════ -->
+    <h2 style="text-align: center">BAB III<br />PENUTUP</h2>
+
+    <h3>3.1 Kesimpulan</h3>
+    <p>
+      Kegiatan PKM AIK ini menghasilkan aplikasi Android fungsional
+      <b>QiblaHub</b> yang mengintegrasikan penentu arah kiblat, jadwal waktu
+      salat, kalender Hijriah, dan informasi masjid/musala terdekat dalam satu
+      platform. Hasil uji coba pada perangkat sesungguhnya menunjukkan akurasi
+      arah kiblat sangat baik (selisih kurang dari 1&deg; terhadap nilai rujukan
+      perhitungan Ilmu Falak untuk Kota Makassar). Kegiatan ini membuktikan
+      bahwa keilmuan Informatika dapat menjadi sarana dakwah dan pelayanan umat,
+      sebagai wujud penerapan Ilmu Falak dan nilai-nilai Al-Islam dan
+      Kemuhammadiyahan (AIK) dalam bentuk produk teknologi yang aplikatif dan
+      bermanfaat bagi masyarakat luas.
+    </p>
+
+    <h3>3.2 Rekomendasi</h3>
+    <p>
+      Berdasarkan hasil kegiatan, kelompok merekomendasikan beberapa hal untuk
+      pengembangan lebih lanjut:
+    </p>
+    <ol>
+      <li>
+        Memublikasikan aplikasi ke Google Play Store serta menambah dukungan
+        platform iOS dan web agar jangkauan pengguna lebih luas.
+      </li>
+      <li>
+        Melakukan validasi data lokasi masjid/musala secara lebih akurat bekerja
+        sama dengan pengurus Amal Usaha Muhammadiyah setempat.
+      </li>
+      <li>
+        Menjalin kerja sama dengan Majelis Tarjih dan Tajdid atau lembaga falak
+        setempat untuk verifikasi arah kiblat masjid secara resmi.
+      </li>
+      <li>
+        Melakukan uji coba aplikasi kepada pengguna secara lebih luas serta
+        memperluas sosialisasi ke masjid, sekolah, dan Amal Usaha Muhammadiyah.
+      </li>
+    </ol>
+  </body>
+</html>

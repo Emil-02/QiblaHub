@@ -4,10 +4,8 @@
 library;
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../state/app_state.dart';
 import '../theme.dart';
 import '../utils/islamic_utils.dart';
@@ -20,11 +18,9 @@ import 'qibla_screen.dart';
 class HomeScreen extends StatefulWidget {
   final void Function(int) onNavigateTab;
   const HomeScreen({super.key, required this.onNavigateTab});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   Timer? _timer;
 
