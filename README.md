@@ -9,6 +9,8 @@
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
+📥 **[Download APK (Releases)](https://github.com/Emil-02/QiblaHub/releases/latest)** — pilih `arm64-v8a` untuk kebanyakan HP Android
+
 </div>
 
 ---
@@ -58,8 +60,11 @@ flutter pub get
 flutter run
 
 # 4. (Opsional) Build APK release
-flutter build apk --release
+flutter build apk --release --split-per-abi
 ```
+
+> 🔑 Untuk menandatangani build release dengan keystore sendiri, buat `android/key.properties`
+> (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`). Tanpa file itu build memakai debug key.
 
 > ⚠️ Fitur kompas membutuhkan perangkat fisik — emulator tidak memiliki magnetometer.
 
