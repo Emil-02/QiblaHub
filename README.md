@@ -8,6 +8,7 @@
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=dart&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+[![spruce](https://gh-spruce.vercel.app/api/badge?repo=Emil-02/QiblaHub)](https://gh-spruce.vercel.app/u/Emil-02)
 
 📥 **[Download APK (Releases)](https://github.com/Emil-02/QiblaHub/releases/latest)** — pilih `arm64-v8a` untuk kebanyakan HP Android
 
