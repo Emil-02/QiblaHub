@@ -63,3 +63,7 @@ app.*.map.json
 
 # punya repo sendiri (Web-QiblaHub)
 web-version/
+
+# Release builds are published on GitHub Releases
+*.apk
+*.aab
